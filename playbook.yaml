@@ -11,8 +11,8 @@
     - name: Enable community repo
       replace:
         path: /etc/apk/repositories
-        regexp: '#'
-        replace: " "
+        regexp: '#http'
+        replace: "https"
   
     - name: Install required packages
       apk:
