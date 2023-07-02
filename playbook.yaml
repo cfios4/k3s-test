@@ -1,45 +1,30 @@
 ---
-- name: Install and configure k3s cluster on Alpine Linux
+- name: Install K3s on servers
   hosts: all
   become: true
-  vars:
-    k3s_token: myk3stoken
-    master_ip: "{{ hostvars[groups['masters'][0]]['ansible_host'] }}"
-    node_ips: "{{ groups['nodes'] | map('extract', hostvars, ['ansible_host']) | join(',') }}"
+  gather_facts: true
   
-  tasks:
-    - name: Enable community repo
-      replace:
-        path: /etc/apk/repositories
-        regexp: \B#([A-Za-z0-9]{2,})(?![~!@#$%^&*()=+_`\-\|\/'\[\]\{\}]|[?.,]*\w)
-        replace: "https"
-  
+  tasks:  
     - name: Install required packages
       apk:
-        name: "{{ item }}"
-      loop:
-        - curl
-        - iptables
-      
-    - name: Install k3s
-      shell: curl -fsSL https://get.k3s.io | ash
-      args:
-        creates: /usr/local/bin/k3s
-      
-    - name: Retrieve the node token from the master
-      command: cat /var/lib/rancher/k3s/server/node-token
-      register: node_token
-      when: "'master' in group_names"
-      
-    - name: Configure master node
-      shell: k3s server --cluster-init --token {{ k3s_token }} --force
-      when: "'master' in group_names"
-      
-    - name: Fetch the master node's IP
-      shell: ip addr show eth0 | grep -w inet | cut -d ' ' -f 6 | cut -d '/' -f 1
-      changed_when: false
-      register: master_ip
-      
-    - name: Join worker nodes to the master
-      shell: curl -sfL https://get.k3s.io | K3S_URL="https://{{ master_ip.stdout }}:6443" K3S_TOKEN="{{ node_token.stdout }}" INSTALL_K3S_EXEC="--write-kubeconfig-mode 644" ash -
-      when: "'nodes' in group_names"
+        name: 
+          - curl
+          - bash
+        state: present
+
+
+- name: Install K3s on the server
+  hosts: server
+  shell: curl -sfL https://get.k3s.io | sh -
+
+- name: Retrieve the K3s server token
+  hosts: server
+  shell: cat /var/lib/rancher/k3s/server/node-token
+  register: k3s_server_token
+
+- name: Join K3s agents to the cluster
+  hosts: agent
+  become: true
+  tasks:
+    - name: Install K3s on the agent
+      shell: curl -sfL https://get.k3s.io | K3S_URL=https://{{ hostvars['k3s-server']['k3s_ansible_default_ipv4']['address']:6443 K3S_TOKEN={{ k3s_server_token.stdout }} sh -
