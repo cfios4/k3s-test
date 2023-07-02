@@ -1,28 +1,26 @@
 ---
-- name: Install K3s on servers
+- name: Install dependencies
   hosts: all
   become: true
-  gather_facts: true
-  
-  tasks:  
+  tasks:
     - name: Install required packages
       apk:
         name: 
           - curl
           - bash
         state: present
-
-
+        
+- name: Install K3s on servers
+  hosts: server
+  become: true
+  tasks:
     - name: Install K3s on the server
-      hosts: server
       shell: curl -sfL https://get.k3s.io | sh -
 
     - name: Retrieve the K3s server token
-      hosts: server
       shell: cat /var/lib/rancher/k3s/server/node-token
       register: k3s_server_token
 
-    - name: Join K3s agents to the cluster
-      hosts: agent
-      become: true
+- name: Join K3s agents to the cluster
+    - name: Install K3s on the agent
       shell: curl -sfL https://get.k3s.io | K3S_URL=https://{{ hostvars['k3s-server']['k3s_ansible_default_ipv4']['address']:6443 K3S_TOKEN={{ k3s_server_token.stdout }} sh -
