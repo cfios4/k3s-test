@@ -7,7 +7,7 @@
       apk:
         name: 
           - curl
-          - bash
+          - iptables
         state: present
         
 - name: Install K3s on servers
