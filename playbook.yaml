@@ -30,7 +30,7 @@
         TAILSCALEKEY: "{{tailscale_key_output.stdout}}"
 
     - name: Enable Tailscale service
-      systemd:
+      service:
         name: tailscaled
         state: started
         enabled: yes
