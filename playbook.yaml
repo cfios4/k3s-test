@@ -24,5 +24,6 @@
 - name: Join K3s agents to the cluster
   hosts: agent
   become: true
+  tasks:
     - name: Install K3s on the agent
       shell: curl -sfL https://get.k3s.io | K3S_URL=https://{{ hostvars['k3s-server']['k3s_ansible_default_ipv4']['address']:6443 K3S_TOKEN={{ k3s_server_token.stdout }} sh -
