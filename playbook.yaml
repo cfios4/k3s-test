@@ -20,22 +20,6 @@
       loop:
         - curl
         - iptables
-        - tailscale
-
-    - name: Get Tailscale auth-key
-      shell: >
-        curl -H "Authorization: Bearer {{TAILSCALEAPI}}" -d '{"capabilities":{"devices":{"create":{"reusable":false,"ephemeral":false,"preauthorized":true}}}}' https://api.tailscale.com/api/v2/tailnet/-/keys | grep -o '"key":"[^"]*"' | sed 's/"key":"\(.*\)"/\1/'
-      register: tailscale_key_output
-    - set_fact:
-        TAILSCALEKEY: "{{tailscale_key_output.stdout}}"
-
-    - name: Start Tailscaled service
-      shell: tailscaled --state=/var/lib/tailscale/tailscaled.state
-      poll: 0
-      ignore_errors: true
-      
-    - name: Auth Tailscale and start
-      shell: tailscale up --auth-key {{TAILSCALEKEY}} --ssh
       
     - name: Install k3s
       shell: curl -fsSL https://get.k3s.io | ash
@@ -52,7 +36,7 @@
       when: "'master' in group_names"
       
     - name: Fetch the master node's IP
-      shell: tailscale ip -4
+      shell: ip addr show eth0 | grep -Po 'inet \K[\d.]+'
       changed_when: false
       register: master_ip
       
