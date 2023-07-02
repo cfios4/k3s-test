@@ -11,7 +11,7 @@
     - name: Enable community repo
       replace:
         path: /etc/apk/repositories
-        regexp: '#http'
+        regexp: '\B#([A-Za-z0-9]{2,})(?![~!@#$%^&*()=+_`\-\|\/'\[\]\{\}]|[?.,]*\w)://'
         replace: "https"
   
     - name: Install required packages
@@ -29,11 +29,11 @@
     - set_fact:
         TAILSCALEKEY: "{{tailscale_key_output.stdout}}"
 
-    - name: Enable Tailscale service
-      service:
-        name: tailscaled
-        state: started
-        enabled: yes
+    - name: Start Tailscaled service
+      shell: /usr/bin/tailscaled --state=/var/lib/tailscale/tailscaled.state
+      async: 60
+      poll: 0
+      ignore_errors: true
       
     - name: Auth Tailscale and start
       shell: tailscale up --auth-key {{TAILSCALEKEY}} --ssh
