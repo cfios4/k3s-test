@@ -23,7 +23,7 @@
       register: k3s_server_token
 
     - debug:
-      var: '{{item}}'
+        var: '{{item}}'
       with_items:
         - hostvars['server']['ansible_default_ipv4']['address']
         - hostvars['server']['k3s_server_token']
