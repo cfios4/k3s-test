@@ -31,7 +31,6 @@
 
     - name: Start Tailscaled service
       shell: /usr/bin/tailscaled --state=/var/lib/tailscale/tailscaled.state
-      async: 60
       poll: 0
       ignore_errors: true
       
