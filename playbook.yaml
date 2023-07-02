@@ -36,7 +36,7 @@
       when: "'master' in group_names"
       
     - name: Fetch the master node's IP
-      shell: ip addr show eth0 | grep -Po 'inet \K[\d.]+'
+      shell: ip addr show eth0 | grep -w inet | cut -d ' ' -f 6 | cut -d '/' -f 1
       changed_when: false
       register: master_ip
       
