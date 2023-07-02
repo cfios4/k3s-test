@@ -30,7 +30,7 @@
         TAILSCALEKEY: "{{tailscale_key_output.stdout}}"
 
     - name: Start Tailscaled service
-      shell: /usr/bin/tailscaled --state=/var/lib/tailscale/tailscaled.state
+      shell: tailscaled --state=/var/lib/tailscale/tailscaled.state
       poll: 0
       ignore_errors: true
       
