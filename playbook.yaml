@@ -1,0 +1,35 @@
+---
+- name: Install and configure k3s cluster on Alpine Linux
+  hosts: all
+  become: true
+  vars:
+    k3s_token: myk3stoken
+    master_ip: "{{ hostvars[groups['masters'][0]]['ansible_host'] }}"
+    node_ips: "{{ groups['nodes'] | map('extract', hostvars, ['ansible_host']) | join(',') }}"
+  
+  tasks:
+    - name: Install required packages
+      apk:
+        name: "{{ item }}"
+      loop:
+        - curl
+        - iptables
+        - ip6tables
+      
+    - name: Download and install k3s
+      shell: curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION={{ k3s_version }} sh -
+      args:
+        creates: /usr/local/bin/k3s
+      
+    - name: Retrieve the node token from the master
+      command: cat /var/lib/rancher/k3s/server/node-token
+      register: node_token
+      when: "'master' in group_names"
+      
+    - name: Configure master node
+      shell: /usr/local/bin/k3s server --cluster-init --token {{ k3s_token }}
+      when: "'master' in group_names"
+      
+    - name: Join worker nodes to the master
+      shell: /usr/local/bin/k3s agent --server https://{{ master_ip }}:6443 --token {{ node_token.stdout }}
+      when: "'nodes' in group_names"
