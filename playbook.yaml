@@ -8,16 +8,22 @@
     node_ips: "{{ groups['nodes'] | map('extract', hostvars, ['ansible_host']) | join(',') }}"
   
   tasks:
+    - name: Enable community repo
+      replace:
+        path: /etc/apk/repositories
+        regexp: '#'
+        replace: " "
+  
     - name: Install required packages
       apk:
         name: "{{ item }}"
       loop:
         - curl
         - iptables
-        - ip6tables
+        - tailscale
       
-    - name: Download and install k3s
-      shell: curl -sfSL https://get.k3s.io | ash
+    - name: Install k3s
+      shell: curl -fsSL https://get.k3s.io | ash
       args:
         creates: /usr/local/bin/k3s
       
@@ -27,9 +33,14 @@
       when: "'master' in group_names"
       
     - name: Configure master node
-      shell: /usr/local/bin/k3s server --cluster-init --token {{ k3s_token }} --force
+      shell: k3s server --cluster-init --token {{ k3s_token }} --forc
       when: "'master' in group_names"
       
+    - name: Fetch the master node's IP
+      shell: tailscale ip -4
+      changed_when: false
+      register: master_ip
+      
     - name: Join worker nodes to the master
-      shell: /usr/local/bin/k3s agent --server https://{{ master_ip }}:6443 --token {{ node_token.stdout }}
+      shell: curl -sfL https://get.k3s.io | K3S_URL="https://{{ master_ip.stdout }}:6443" K3S_TOKEN="{{ node_token.stdout }}" INSTALL_K3S_EXEC="--write-kubeconfig-mode 644" ash -
       when: "'nodes' in group_names"
