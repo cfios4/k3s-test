@@ -36,6 +36,7 @@ resource "proxmox_vm_qemu" "fedora-vm" {
     model = "virtio"
     bridge = "vmbr0"
   }
+}
   
   connection {
     type     = "ssh"
@@ -49,6 +50,7 @@ resource "proxmox_vm_qemu" "fedora-vm" {
       "apk add -U python3",
     ]
   }
+}
 
 resource "proxmox_vm_qemu" "fedora-vm" {
   count = 1
