@@ -24,7 +24,7 @@
 
     - name: Register local IP to connect to master
       debug:
-        msg: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'].stdout }}"
+        msg: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}.stdout"
       register: k3s_server_ip
 
     - debug:
