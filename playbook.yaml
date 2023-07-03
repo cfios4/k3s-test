@@ -28,6 +28,7 @@
         var: '{{item}}'
       with_items:
         - hostvars['k3s-server']['ansible_default_ipv4']['address'].stdout
+        - k3s_server_token.stdout
         - K3S_TOKEN.stdout
 
 - name: Join K3s agents to the cluster
