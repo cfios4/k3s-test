@@ -46,6 +46,7 @@ resource "proxmox_vm_qemu" "k3s-server" {
   
   provisioner "remote-exec" {
     inline = [
+      "echo k3s-server >> /etc/hostname",
       "apk add -U python3",
     ]
   }
@@ -83,6 +84,7 @@ resource "proxmox_vm_qemu" "k3s-agent1" {
   
   provisioner "remote-exec" {
     inline = [
+      "echo k3s-agent1 >> /etc/hostname",
       "apk add -U python3",
     ]
   }
@@ -120,6 +122,7 @@ resource "proxmox_vm_qemu" "k3s-agent2" {
   
   provisioner "remote-exec" {
     inline = [
+      "echo k3s-agent2 >> /etc/hostname",
       "apk add -U python3",
     ]
   }
