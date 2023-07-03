@@ -23,7 +23,7 @@
       register: k3s_server_token
 
     - name: Register local IP to connect to master
-      debug: var=hostvars[server]['ansible_default_ipv4']['address']
+      debug: var=hostvars[]['ansible_default_ipv4']['address']
       register: k3s_server_ip
 
     - debug:
