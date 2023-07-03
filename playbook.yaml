@@ -29,7 +29,7 @@
     - debug:
         var: '{{item}}'
       with_items:
-        - k3s_server_ip.stdout
+        - {{ k3s_server_ip }}
         - k3s_server_token.stdout
 
 - name: Join K3s agents to the cluster
