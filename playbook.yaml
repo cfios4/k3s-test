@@ -36,5 +36,12 @@
   hosts: agent
   become: true
   tasks:
+
+    - debug:
+        var: '{{item}}'
+      with_items:
+        - k3s_server_ip
+        - k3s_server_token.stdout
+  
     - name: Install K3s on the agent
       shell: curl -sfL https://get.k3s.io | K3S_URL=https://{{ k3s_server_ip }}:6443 K3S_TOKEN={{ k3s_server_token.stdout }} sh -
