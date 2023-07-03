@@ -14,7 +14,7 @@ provider "proxmox" {
   pm_tls_insecure = true
 }
 
-resource "proxmox_vm_qemu" "fedora-vm" {
+resource "proxmox_vm_qemu" "k3s-server" {
   count = 1
   target_node = "proxmox"
   name = "k3s-server"
@@ -51,7 +51,7 @@ resource "proxmox_vm_qemu" "fedora-vm" {
   }
 }
 
-resource "proxmox_vm_qemu" "fedora-vm" {
+resource "proxmox_vm_qemu" "k3s-agent1" {
   count = 1
   target_node = "proxmox"
   name = "k3s-agent1"
@@ -88,7 +88,7 @@ resource "proxmox_vm_qemu" "fedora-vm" {
   }
 }
 
-resource "proxmox_vm_qemu" "fedora-vm" {
+resource "proxmox_vm_qemu" "k3s-agent2" {
   count = 1
   target_node = "proxmox"
   name = "k3s-agent2"
