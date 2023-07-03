@@ -24,12 +24,12 @@
 
     - name: Register local IP to connect to master
       set_fact: 
-        k3s_server_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+        k3s_server_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] | ipaddr('address') }}"
 
     - debug:
         var: '{{item}}'
       with_items:
-        - "{{ k3s_server_ip.item }}"
+        - k3s_server_ip
         - k3s_server_token.stdout
 
 - name: Join K3s agents to the cluster
