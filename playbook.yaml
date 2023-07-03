@@ -24,7 +24,7 @@
 
     - name: Register local IP to connect to master
       debug: 
-        var: hostvars['server']
+        var: ansible_facts
       register: k3s_server_ip
 
     - debug:
