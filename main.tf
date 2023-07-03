@@ -15,7 +15,7 @@ provider "proxmox" {
 }
 
 resource "proxmox_vm_qemu" "fedora-vm" {
-  count = 3
+  count = 1
   target_node = "proxmox"
   name = "k3s-server"
   clone = "k3s-template"
@@ -51,7 +51,7 @@ resource "proxmox_vm_qemu" "fedora-vm" {
   }
 
 resource "proxmox_vm_qemu" "fedora-vm" {
-  count = 3
+  count = 1
   target_node = "proxmox"
   name = "k3s-agent1"
   clone = "k3s-template"
@@ -87,7 +87,7 @@ resource "proxmox_vm_qemu" "fedora-vm" {
   }
 
 resource "proxmox_vm_qemu" "fedora-vm" {
-  count = 3
+  count = 1
   target_node = "proxmox"
   name = "k3s-agent2"
   clone = "k3s-template"
