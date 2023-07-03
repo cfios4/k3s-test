@@ -37,4 +37,4 @@
   become: true
   tasks:
     - name: Install K3s on the agent
-      shell: curl -sfL https://get.k3s.io | K3S_URL=https://{{ k3s_server_ip.stdout }}:6443 K3S_TOKEN={{ k3s_server_token.stdout }} sh -
+      shell: curl -sfL https://get.k3s.io | K3S_URL=https://{{ k3s_server_ip }}:6443 K3S_TOKEN={{ k3s_server_token.stdout }} sh -
