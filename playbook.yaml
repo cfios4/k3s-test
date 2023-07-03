@@ -19,8 +19,10 @@
       shell: curl -sfL https://get.k3s.io | sh -
 
     - name: Retrieve the K3s server token
+      shell: cat /var/lib/rancher/k3s/server/node-token
+      register: k3s_token
       set_fact:
-        k3s_server_token: cat /var/lib/rancher/k3s/server/node-token
+        k3s_server_token: "{{ k3s_token.stdout }}"
 
     - name: Register local IP to connect to master
       set_fact: 
@@ -44,4 +46,4 @@
         - k3s_server_token.stdout
   
     - name: Install K3s on the agent
-      shell: curl -sfL https://get.k3s.io | K3S_URL=https://{{ k3s_server_ip }}:6443 K3S_TOKEN={{ k3s_server_token.stdout }} sh -
+      shell: curl -sfL https://get.k3s.io | K3S_URL=https://{{ k3s_server_ip }}:6443 K3S_TOKEN={{ k3s_server_token }} sh -
