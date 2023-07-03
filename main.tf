@@ -14,10 +14,10 @@ provider "proxmox" {
   pm_tls_insecure = true
 }
 
-resource "proxmox_vm_qemu" "k3s-server" {
-  count = 1
+resource "proxmox_vm_qemu" "k3s-${count.index}" {
+  count = 3
   target_node = "proxmox"
-  name = "k3s-server"
+  name = "k3s-${count.index}"
   clone = "k3s-template"
   full_clone = false
   memory = "512"
@@ -46,83 +46,7 @@ resource "proxmox_vm_qemu" "k3s-server" {
   
   provisioner "remote-exec" {
     inline = [
-      "echo k3s-server >> /etc/hostname",
-      "apk add -U python3",
-    ]
-  }
-}
-
-resource "proxmox_vm_qemu" "k3s-agent1" {
-  count = 1
-  target_node = "proxmox"
-  name = "k3s-agent1"
-  clone = "k3s-template"
-  full_clone = false
-  memory = "512"
-  cpu = "host"
-  sockets = "1"
-  cores = "1"
-  
-  disk {
-    slot = 0
-    size = "4G"
-    storage = "local-lvm"
-	  type = "sata"
-  }
-  
-  network {
-    model = "virtio"
-    bridge = "vmbr0"
-  }
-  
-  connection {
-    type     = "ssh"
-    user     = "root"
-    password = "Admin!!1"
-    host     = "k3s-"
-  }
-  
-  provisioner "remote-exec" {
-    inline = [
-      "echo k3s-agent1 >> /etc/hostname",
-      "apk add -U python3",
-    ]
-  }
-}
-
-resource "proxmox_vm_qemu" "k3s-agent2" {
-  count = 1
-  target_node = "proxmox"
-  name = "k3s-agent2"
-  clone = "k3s-template"
-  full_clone = false
-  memory = "512"
-  cpu = "host"
-  sockets = "1"
-  cores = "1"
-  
-  disk {
-    slot = 0
-    size = "4G"
-    storage = "local-lvm"
-	  type = "sata"
-  }
-  
-  network {
-    model = "virtio"
-    bridge = "vmbr0"
-  }
-  
-  connection {
-    type     = "ssh"
-    user     = "root"
-    password = "Admin!!1"
-    host     = "k3s-"
-  }
-  
-  provisioner "remote-exec" {
-    inline = [
-      "echo k3s-agent2 >> /etc/hostname",
+      "echo k3s-${count.index} >> /etc/hostname",
       "apk add -U python3",
     ]
   }
