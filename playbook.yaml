@@ -22,6 +22,11 @@
       command: cat /var/lib/rancher/k3s/server/node-token
       register: k3s_server_token
 
+    - name: Register local IP to connect to master
+      debug:
+        msg: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+      register: k3s_server_ip
+
     - debug:
         var: '{{item}}'
       with_items:
@@ -33,4 +38,4 @@
   become: true
   tasks:
     - name: Install K3s on the agent
-      shell: curl -sfL https://get.k3s.io | K3S_URL=https://{{ hostvars['k3s-server']['ansible_eth0']['ipv4']['address'] }}:6443 K3S_TOKEN={{ k3s_server_token.stdout }} sh -
+      shell: curl -sfL https://get.k3s.io | K3S_URL=https://{{ k3s_server_ip.stdout }}:6443 K3S_TOKEN={{ k3s_server_token.stdout }} sh -
