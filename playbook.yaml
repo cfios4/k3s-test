@@ -21,7 +21,7 @@
     - name: Retrieve the K3s server token
       shell: cat /var/lib/rancher/k3s/server/node-token
       register: k3s_token
-      set_fact:
+    - set_fact:
         k3s_server_token: "{{ k3s_token.stdout }}"
 
     - name: Register local IP to connect to master
