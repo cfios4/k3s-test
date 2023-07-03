@@ -19,8 +19,8 @@
       shell: curl -sfL https://get.k3s.io | sh -
 
     - name: Retrieve the K3s server token
-      command: cat /var/lib/rancher/k3s/server/node-token
-      register: k3s_server_token
+      set_fact:
+        k3s_server_token: cat /var/lib/rancher/k3s/server/node-token
 
     - name: Register local IP to connect to master
       set_fact: 
