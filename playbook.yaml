@@ -24,7 +24,7 @@
 
     - name: Register local IP to connect to master
       debug: 
-        var: hostvars
+        var: hostvars['server']
       register: k3s_server_ip
 
     - debug:
