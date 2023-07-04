@@ -17,6 +17,7 @@
   tasks:
     - name: Install K3s on the server
       shell: curl -sfL https://get.k3s.io | sh -
+      creates: /var/lib/rancher/k3s/server/node-token
 
     - name: Retrieve the K3s server token
       shell: cat /var/lib/rancher/k3s/server/node-token
