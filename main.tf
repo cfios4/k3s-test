@@ -44,11 +44,10 @@ resource "proxmox_vm_qemu" "k3s-" {
     host     = "k3s-"
   }
   
-  provisioner "remote-exec" {
-    inline = [
-      "echo k3s-${count.index} >> /etc/hostname",
-      "apk add -U python3",
-      "sleep 15",
-    ]
-  }
+#  provisioner "remote-exec" {
+#    inline = [
+#      "echo k3s-${count.index} >> /etc/hostname",
+#      "apk add -U python3",
+#    ]
+#  }
 }
