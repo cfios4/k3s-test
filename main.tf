@@ -58,7 +58,5 @@ resource "null_resource" "dependency_chain" {
     instance_ids = join(",", proxmox_vm_qemu.k3s-[count.index + 1:]),
   }
 
-  provisioner "local-exec" {
-    command = "echo Provisioner for k3s-${count.index} depends on ${proxmox_vm_qemu.k3s-[count.index + 1]}"
-  }
+  depends_on = [proxmox_vm_qemu.k3s-[count.index]]
 }
