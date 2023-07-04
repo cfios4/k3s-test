@@ -55,7 +55,7 @@ resource "proxmox_vm_qemu" "k3s-" {
 resource "null_resource" "dependency_chain" {
   count = length(proxmox_vm_qemu.k3s-) - 1
   triggers = {
-    instance_ids = join(",", proxmox_vm_qemu.k3s-[count.index + 1:])
+    instance_ids = join(",", proxmox_vm_qemu.k3s-[count.index + 1:]),
   }
 
   provisioner "local-exec" {
