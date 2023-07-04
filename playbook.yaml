@@ -31,8 +31,8 @@
         k3s_server_token: "{{ k3s_token.stdout }}"
 
     - name: Register local IP to connect to master
-      set_fact: 
-        k3s_server_ip: "{{ ansible_default_ipv4.address }}"
+      #set_fact: 
+      #  k3s_server_ip: "{{ ansible_default_ipv4.address }}"
       debug: 
         msg: "{{ ansible_default_ipv4.address }}"
 
