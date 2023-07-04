@@ -40,10 +40,9 @@
   tasks:
     - name: test vars
       debug:
-        var: "{{ item }}"
-      with_items:
-        - "{{ hostvars['k3s-server']['k3s_server_ip'] }}"
-        - "{{ hostvars['k3s-server']['k3s_server_token'] }}"
+        var: "{{ hostvars['k3s-server']['k3s_server_token'] }}"
+      debug:
+        var: "{{ hostvars['k3s-server']['k3s_server_ip'] }}"
         
     - name: Install K3s on the agent
       shell: curl -sfL https://get.k3s.io | K3S_URL=https://"{{ hostvars['k3s-server']['k3s_server_ip'] }}":6443 K3S_TOKEN="{{ hostvars['k3s-server']['k3s_server_token'] }}" sh -
