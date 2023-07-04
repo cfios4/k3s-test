@@ -50,13 +50,9 @@ resource "proxmox_vm_qemu" "k3s-" {
       "apk add -U python3",
     ]
   }
-}
 
-resource "null_resource" "dependency_chain" {
-  count = length(proxmox_vm_qemu.k3s-) - 1
-  triggers = {
-    instance_ids = join(",", proxmox_vm_qemu.k3s-[count.index + 1:]),
+  provisioner "local-exec" {
+    command = "echo Provisioned k3s-${count.index}"
+    depends_on = [proxmox_vm_qemu.k3s-[(count.index + 2) % 3]]
   }
-
-  depends_on = [proxmox_vm_qemu.k3s-[count.index]]
 }
