@@ -34,7 +34,7 @@
       set_fact: 
         k3s_server_ip: "{{ ansible_default_ipv4.address }}"
       debug: 
-        var: "{{ ansible_default_ipv4.address }}"
+        msg: "{{ ansible_default_ipv4.address }}"
 
 - name: Join K3s agents to the cluster
   hosts: agent
