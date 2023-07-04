@@ -48,6 +48,7 @@ resource "proxmox_vm_qemu" "k3s-" {
     inline = [
       "echo k3s-${count.index} >> /etc/hostname",
       "apk add -U python3",
+      "sleep 15",
     ]
   }
 }
