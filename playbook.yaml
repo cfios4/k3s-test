@@ -21,8 +21,8 @@
         creates: /var/lib/rancher/k3s/server/node-token
 
     - name: Wait for node-token file to be created
-      pause: 
-        seconds: 45
+      wait_for:
+        path: /var/lib/rancher/k3s/server/node-token
 
     - name: Retrieve the K3s server token
       shell: cat /var/lib/rancher/k3s/server/node-token
