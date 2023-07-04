@@ -16,7 +16,7 @@
   become: true
   tasks:
     - name: Install K3s on the server
-      shell: curl -sfL https://get.k3s.io | sh - server --cluster-init
+      shell: curl -sfL https://get.k3s.io | sh -s - server --cluster-init
       args:
         creates: /var/lib/rancher/k3s/server/node-token
 
@@ -39,4 +39,4 @@
   become: true
   tasks:        
     - name: Install K3s on the agent
-      shell: curl -sfL https://get.k3s.io | K3S_TOKEN="{{ hostvars['k3s-0']['k3s_server_token'] }}" sh - agent --server https://"{{ hostvars['k3s-0']['k3s_server_ip'] }}":6443
+      shell: curl -sfL https://get.k3s.io | K3S_TOKEN="{{ hostvars['k3s-0']['k3s_server_token'] }}" sh -s - agent --server https://"{{ hostvars['k3s-0']['k3s_server_ip'] }}":6443
