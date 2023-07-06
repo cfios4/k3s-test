@@ -4,6 +4,12 @@
   become: true
   gather_facts: true
   tasks:
+    - name: Enable community repo
+      replace:
+        path: /etc/apk/repositories
+        regexp: '#'
+        replace: ''
+
     - name: Install required packages
       apk:
         name: 
