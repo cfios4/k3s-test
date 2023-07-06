@@ -14,13 +14,9 @@
       apk:
         name: 
           - curl
+          - docker
           - tailscale
         state: present
-
-    - name: Install Docker
-      shell: curl -fsSL https://get.docker.com | sh
-      args:
-        creates: /var/lib/docker
         
 - name: Install Docker on servers
   hosts: server
@@ -39,12 +35,9 @@
     - set_fact:
         swarm_join_token: "{{ swarm_token.stdout }}"
 
-- name: Join K3s agents to the cluster
+- name: Join swarm agents to the cluster
   hosts: agent
   become: true
-  tasks:        
-    - name: Install K3s on the agent
-      shell: curl -fsSL https://get.docker.com | sh
-
+  tasks:
     - name: Join cluster
-      shell: docker swarm join --token "{{ swarm_join_token }}"
+      shell: docker swarm join --token "{{ swarm_join_token }}" "{{ hostvars['swarm-0']['ansible_tailscale0.ipv4.address'] }}"
