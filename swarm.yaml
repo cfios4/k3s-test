@@ -1,0 +1,44 @@
+---
+- name: Install dependencies
+  hosts: all
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Install required packages
+      apk:
+        name: 
+          - curl
+          - tailscale
+        state: present
+
+    - name: Install Docker
+      shell: curl -fsSL https://get.docker.com | sh
+      args:
+        creates: /var/lib/docker
+        
+- name: Install Docker on servers
+  hosts: server
+  become: true
+  tasks:
+    - name: Wait for Docker to be installed
+      wait_for:
+        path: /var/lib/docker
+
+    - name: Initialize cluster
+      shell: docker swarm init --advertise-addr tailscale0
+
+    - name: Retrieve the swarm join token
+      shell: docker swarm join-token worker -q
+      register: swarm_token
+    - set_fact:
+        swarm_join_token: "{{ swarm_token.stdout }}"
+
+- name: Join K3s agents to the cluster
+  hosts: agent
+  become: true
+  tasks:        
+    - name: Install K3s on the agent
+      shell: curl -fsSL https://get.docker.com | sh
+
+    - name: Join cluster
+      shell: docker swarm join --token "{{ swarm_join_token }}"
