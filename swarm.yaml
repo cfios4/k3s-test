@@ -16,6 +16,7 @@
           - curl
           - docker
           - tailscale
+          - glusterfs-server
         state: present
         
 - name: Install Docker on servers
@@ -54,3 +55,9 @@
   tasks:
     - name: Join cluster
       shell: docker swarm join --token "{{ worker_join_token }}" "{{ hostvars['swarm-0']['ansible_tailscale0.ipv4.address'] }}:2377"
+
+- name: Setup GlusterFS
+  hosts: all
+  become: true
+  tasks:
+    - name: 

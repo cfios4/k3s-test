@@ -12,11 +12,11 @@
         state: present
         
 - name: Install K3s on servers
-  hosts: server
+  hosts: master
   become: true
   tasks:
     - name: Install K3s on the server
-      shell: curl -sfL https://get.k3s.io | sh -s - server --cluster-init
+      shell: curl -sfL https://get.k3s.io | sh - --cluster-init
       args:
         creates: /var/lib/rancher/k3s/server/node-token
 
@@ -33,6 +33,13 @@
     - name: Register local IP to connect to master
       set_fact: 
         k3s_server_ip: "{{ ansible_default_ipv4.address }}"
+
+- name: Join K3s agents to the cluster
+  hosts: server
+  become: true
+  tasks:        
+    - name: Install K3s on the server
+      shell: curl -sfL https://get.k3s.io | K3S_TOKEN="{{ hostvars['k3s-0']['k3s_server_token'] }}" sh -
 
 - name: Join K3s agents to the cluster
   hosts: agent
